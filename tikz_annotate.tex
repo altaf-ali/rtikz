@@ -1,0 +1,46 @@
+
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\usepackage{tikz}
+
+\newcommand{\annotate}[7]{
+	\node at (#3) [draw,#2,thick,minimum width=#4,minimum height=#5, anchor=south west, fill=#2, draw opacity=1] (#1_rect) {};
+	%\draw[#6,ultra thick,rounded corners] (#2) rectangle (#3) ;
+	%\node[draw,align=left, #2, thick,text=black, fill=#2, opacity=0.1, text opacity=1, draw opacity=1, anchor=south west] (#1_text) at (#6) {\Large #9};
+	%\node[circle] (#1_circle) at #3;
+	\node[circle,draw, #7, inner sep=1.5pt, anchor=south] (#1_circle) at (#1_rect.#6) {\Large \textbf{#1}};
+	%\draw [-latex, thick, #2] (#1_text) to ([#8]#1_rect.#7);
+}
+
+\newenvironment{annotated_figure}[1]{
+	\begin{tikzpicture}
+		\node [anchor=south west, inner sep=0,outer sep=0] (image) at (0,0) {\includegraphics{#1}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]}{
+		\end{scope}
+	\end{tikzpicture}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{figure}[h!t]
+
+\begin{annotated_figure}{lm_summary.png}
+	\annotate{1}{blue, opacity=0.1}{0.105, 0.62}{12cm}{1.1cm}{north}{fill=blue, text=white}
+	\annotate{2}{red, opacity=0.1}{0.270, 0.35}{2.3cm}{2cm}{north}{fill=red, text=white}
+	\annotate{3}{red, opacity=0.1}{0.384, 0.35}{2.8cm}{2cm}{north}{fill=red, text=white}
+	\annotate{4}{red, opacity=0.1}{0.521, 0.35}{2.1cm}{2cm}{north}{fill=red, text=white}
+	\annotate{5}{red, opacity=0.1}{0.625, 0.35}{2.2cm}{2cm}{north}{fill=red, text=white}
+	%\annotate{A}{0.27,0.55}{0.375,0.35}{0.2,1}{A}{red}
+	%\annotate{B}{0.38,0.55}{0.518,0.35}{0.4,1}{B}{blue}
+	%\annotate{C}{0.52,0.55}{0.618,0.35}{0.6,1}{C}{red}
+	%\annotate{D}{0.62,0.55}{0.718,0.35}{0.8,1}{D}{blue}
+\end{annotated_figure}
+
+\end{figure}
+
+\end{document}
+

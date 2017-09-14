@@ -1,0 +1,46 @@
+---
+title: "Tikz Annotate Demo"
+output:
+  html_document: default
+  pdf_document: default
+header-includes: \usepackage{tikz}
+---
+
+
+```{r setup, include=FALSE}
+library(gplots)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, echo=FALSE, results='hide'}
+model <- lm(mpg ~ wt, mtcars)
+
+summary_text <- capture.output(summary(model))
+png("lm_summary.png", width=2, height=1, units="in", res=300, pointsize=2)
+textplot(summary_text, mar=c(0,0,0,0))
+dev.off()
+```
+
+```{r tikz-ex, engine = "tikz", fig.width=8, echo = FALSE}
+\newcommand{\annotate}[7]{
+	\node at (#3) [draw,#2,minimum width=#4,minimum height=#5, anchor=south west, draw opacity=1] (#1_rect) {};
+	\node[circle,draw, #7, inner sep=2pt, anchor=south] (#1_circle) at (#1_rect.#6) {\LARGE \textbf{#1}};
+}
+
+\newenvironment{annotated_figure}[1]{
+	\begin{tikzpicture}
+		\node [anchor=south west, inner sep=0,outer sep=0] (image) at (0,0) {\includegraphics{#1}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]}{
+		\end{scope}
+	\end{tikzpicture}
+}
+
+\begin{annotated_figure}{lm_summary.png}
+	\annotate{1}{blue, fill=blue, opacity=0.05}{0.105, 0.62}{12cm}{1.1cm}{north}{blue}
+	\annotate{2}{red,  fill=red,  opacity=0.05}{0.258, 0.35}{2.3cm}{2cm}{north}{red}
+	\annotate{3}{red,  fill=red,  opacity=0.05}{0.372, 0.35}{2.8cm}{2cm}{north}{red}
+	\annotate{4}{red,  fill=red,  opacity=0.05}{0.509, 0.35}{2.1cm}{2cm}{north}{red}
+	\annotate{5}{red,  fill=red,  opacity=0.05}{0.613, 0.35}{2.2cm}{2cm}{north}{red}
+\end{annotated_figure}
+```
