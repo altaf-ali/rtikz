@@ -1,33 +1,54 @@
 ---
-title: "Tikz Annotate Demo"
+title: "Tikz Annotate"
 output:
-  html_document: default
+  html_document: 
+    code_folding: hide
   pdf_document: default
 header-includes: 
-  - \usepackage{tikz}
+  \usepackage{tikz}
 ---
 
-```{r setup, include=FALSE}
-library(gplots)
+Annotating text output on the fly....
 
-knitr::opts_chunk$set(echo = TRUE)
-```
+**Step 1.** First, run whatever command that generates what you want to annotate and use `capture.output` and `textplot` to save it to a `.png` file.
 
-```{r message=FALSE, echo=FALSE, results='hide'}
+```{r message=FALSE}
 model <- lm(mpg ~ wt, mtcars)
 
-summary_text <- capture.output(summary(model))
+captured_text <- capture.output(summary(model))
+
 png("lm_summary.png", width=2, height=1, units="in", res=300, pointsize=2)
-textplot(summary_text, mar=c(0,0,0,0))
-dev.off()
+gplots::textplot(captured_text, mar=c(0,0,0,0))
+invisible(dev.off())
 ```
 
-```{r tikz-ex, engine = "tikz", fig.width=8, echo = FALSE}
+**Step 2.** Next, use tikz to annotate the `.png` you just created.
+
+**Step 3.** You're done. There's no step 3.
+
+Code is available here: http://github.com/altaf-ali/tikz_annotate
+
+```{r tikz-ex, engine = "tikz", fig.width=8, echo=FALSE}
+% --- annotate command
+%   arguments:
+%    1. text label
+%    2. color options of the rectangle
+%    3. x,y coordinate of the rectangle
+%    4. width of the rectagle
+%    5. height of the rectagle
+%    6. anchor of the rectagle
+%    7. color options of the text label
+%    8. anchor of the text label
+%
 \newcommand{\annotate}[8]{
 	\node at (#3) [draw,#2,minimum width=#4,minimum height=#5, anchor=south west, draw opacity=1] (rect_#1) {};
 	\node[circle,draw, #7, inner sep=2pt, anchor=#8] (circle_#1) at (rect_#1.#6) {\LARGE \textbf{#1}};
 }
 
+% --- annotated_figure environment 
+%   arguments: 
+%     1. name of a graphics file, generally a .png file 
+%
 \newenvironment{annotated_figure}[1]{
 	\begin{tikzpicture}
 		\node [anchor=south west, inner sep=0,outer sep=0] (image) at (0,0) {\includegraphics{#1}};
@@ -36,12 +57,26 @@ dev.off()
 	\end{tikzpicture}
 }
 
+\definecolor{darkgreen}{RGB}{0,128,0}
+		  
 \begin{annotated_figure}{lm_summary.png}
 	\annotate{1}{blue, fill=blue, opacity=0.05}{0.100, 0.62}{11cm}{1.1cm}{west}{blue}{east}
 	\annotate{2}{red,  fill=red,  opacity=0.05}{0.256, 0.35}{2.3cm}{2cm}{north}{red}{south}
 	\annotate{3}{red,  fill=red,  opacity=0.05}{0.371, 0.35}{2.8cm}{2cm}{north}{red}{south}
 	\annotate{4}{red,  fill=red,  opacity=0.05}{0.509, 0.35}{2.0cm}{2cm}{north}{red}{south}
 	\annotate{5}{red,  fill=red,  opacity=0.05}{0.610, 0.35}{3.3cm}{2cm}{north}{red}{south}
-	\annotate{6}{teal, fill=teal,  opacity=0.05}{0.100, 0.125}{17cm}{0.5cm}{west}{teal}{east}
+	\annotate{6}{darkgreen, fill=darkgreen, opacity=0.05}{0.100, 0.125}{17cm}{0.5cm}{west}{darkgreen}{east}
 \end{annotated_figure}
+```
+
+```{r}
+knitr::kable(tibble::tribble(
+  ~Statistic,   ~Description,
+  "Residuals",  "difference between observed and predicted values",
+  "Estimate",   "...",
+  "Std. error", "...",
+  "t-value",    "...",
+  "p-value",    "...",
+  "R-squared",  "..."
+), row.names = TRUE)
 ```
