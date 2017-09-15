@@ -64,9 +64,9 @@ invisible(dev.off())
 		  
 \begin{annotated_figure}{model_summary.png}
 	\annotate{1}{blue, fill=blue, opacity=0.1}{0.01, 0.675}{9cm}{8.4cm}{west}{blue}{east}
-	\annotate{2}{blue, fill=blue, opacity=0.1}{0.01, 0.265}{9cm}{8.4cm}{west}{blue}{east}
-	\annotate{3}{red, fill=red, opacity=0.1}{0.01, 0.575}{12cm}{2.4cm}{west}{red}{east}
-	\annotate{4}{red, fill=red, opacity=0.1}{0.01, 0.165}{12cm}{2.4cm}{west}{red}{east}
+	\annotate{2}{red,  fill=red,  opacity=0.1}{0.01, 0.575}{12cm}{2.4cm}{west}{red}{east}
+	\annotate{3}{blue, fill=blue, opacity=0.1}{0.01, 0.265}{9cm}{8.4cm}{west}{blue}{east}
+	\annotate{4}{red,  fill=red,  opacity=0.1}{0.01, 0.165}{12cm}{2.4cm}{west}{red}{east}
 	\annotate{5}{darkgreen, fill=darkgreen, opacity=0.1}{0.01, 0.045}{14cm}{3cm}{west}{darkgreen}{east}
 \end{annotated_figure}
 ```
