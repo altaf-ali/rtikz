@@ -1,0 +1,28 @@
+% --- annotate command
+%   arguments:
+%    1. text label
+%    2. color options of the rectangle
+%    3. x,y coordinate of the rectangle
+%    4. width of the rectagle
+%    5. height of the rectagle
+%    6. anchor of the rectagle
+%    7. color options of the text label
+%    8. anchor of the text label
+%
+\newcommand{\annotate}[8]{
+	\node at (#3) [draw,#2,minimum width=#4,minimum height=#5, anchor=south west, draw opacity=1] (rect_#1) {};
+	\node[circle,draw, #7, inner sep=2pt, anchor=#8] (circle_#1) at (rect_#1.#6) {\LARGE \textbf{#1}};
+}
+
+% --- annotated_figure environment 
+%   arguments: 
+%     1. name of a graphics file, generally a .png file 
+%
+\newenvironment{annotated_figure}[1]{
+	\begin{tikzpicture}
+		\node [anchor=south west, inner sep=0,outer sep=0] (image) at (0,0) {\includegraphics{#1}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]}{
+		\end{scope}
+	\end{tikzpicture}
+}
+

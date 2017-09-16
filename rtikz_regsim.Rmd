@@ -8,10 +8,21 @@ header-includes:
   \usepackage{tikz}
 ---
 
-
 ```{r}
 library(foreign)
 library(regsim)
+
+capture_text <- function(text, filename, width=1, height=1, res=300, pointsize=2, units="in") {
+  captured_text <- capture.output(text)
+
+  png(filename, width=width, height=height, res=res, pointsize=pointsize, units=units)
+  gplots::textplot(captured_text, mar=c(0,0,0,0))
+  invisible(dev.off())
+}
+```
+
+
+```{r}
 bes <- read.dta("http://uclspp.github.io/PUBLG100/data/bes.dta")
 
 bes$Gender <- factor(bes$Gender, levels = c(0, 1), labels = c("Female", "Male"))
@@ -24,11 +35,7 @@ x <- list(Gender = levels(bes$Gender))
 
 sim <- regsim(model, x)
 
-captured_text <- capture.output(summary(sim))
-
-png("model_summary.png", width=1, height=2, units="in", res=400, pointsize=2)
-gplots::textplot(captured_text, mar=c(0,0,0,0))
-invisible(dev.off())
+capture_text(summary(sim), "model_summary.png", width=1, height=2, units="in", res=400, pointsize=2)
 ```
 
 ```{r tikz-ex, engine = "tikz", fig.width=3.8, echo=FALSE}
