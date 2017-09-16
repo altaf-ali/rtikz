@@ -3,31 +3,32 @@ title: "Tikz Annotate"
 output:
   html_document: 
     code_folding: hide
-  pdf_document: default
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("rtikz.R")
+```
+
+```{r capture_text, echo=FALSE}
+```
 
 Annotating text output on the fly....
 
-**Step 1.** First, run whatever command that generates what you want to annotate and use `capture.output` and `textplot` to save it to a `.png` file.
+**Step 1.** First, run whatever command that generates what you want to annotate and use `capture_text` to save it to a `.png` file.
 
-```{r message=FALSE}
-model <- lm(mpg ~ wt, mtcars)
-
-captured_text <- capture.output(summary(model))
-
-png("model_summary.png", width=2, height=1, units="in", res=300, pointsize=2)
-gplots::textplot(captured_text, mar=c(0,0,0,0))
-invisible(dev.off())
+```{r}
+capture_text(summary(lm(mpg ~ wt, mtcars)), "model_summary.png", width=2, height=1, units="in", res=300, pointsize=2)
 ```
 
-**Step 2.** Next, use tikz to annotate the `.png` you just created.
+**Step 2.** Next, use the tikzannotate to annotate the `.png` you just created.
 
 **Step 3.** You're done. There's no step 3.
 
-Code is available here: <a href="http://github.com/altaf-ali/tikz_annotate" target="_blank">http://github.com/altaf-ali/tikz_annotate</a>
+Code is available here: <a href="http://github.com/altaf-ali/rtikz" target="_blank">http://github.com/altaf-ali/rtikz</a>
 
 ```{r tikz-ex1, engine = "tikz", fig.width=8}
-\input{../PUBLG100/tikz/tikzlibraryannotate.code}
+\usetikzlibrary{annotate}
 \definecolor{darkgreen}{RGB}{0,128,0}
 		  
 \begin{annotated_figure}{model_summary.png}

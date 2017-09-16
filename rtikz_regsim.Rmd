@@ -1,79 +1,42 @@
 ---
-title: "Tikz Annotate"
+title: "Tikz Annotate Regsim"
 output:
   html_document: 
     code_folding: hide
-  pdf_document: default
-header-includes: 
-  \usepackage{tikz}
 ---
 
-```{r}
-library(foreign)
-library(regsim)
-
-capture_text <- function(text, filename, width=1, height=1, res=300, pointsize=2, units="in") {
-  captured_text <- capture.output(text)
-
-  png(filename, width=width, height=height, res=res, pointsize=pointsize, units=units)
-  gplots::textplot(captured_text, mar=c(0,0,0,0))
-  invisible(dev.off())
-}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("rtikz.R")
 ```
 
+```{r capture_text, echo=FALSE}
+```
+
+**Step 1.** First, run whatever command that generates what you want to annotate and use `capture_text` to save it to a `.png` file.
 
 ```{r}
-bes <- read.dta("http://uclspp.github.io/PUBLG100/data/bes.dta")
-
-bes$Gender <- factor(bes$Gender, levels = c(0, 1), labels = c("Female", "Male"))
-model <- glm(Turnout ~ Income + polinfoindex + Influence + Gender + Age + 
-               edu15 + edu17 + edu18 + edu19plus + in_school + in_uni,
-             family = binomial,
-             data = bes)
-
-x <- list(Gender = levels(bes$Gender))
-
-sim <- regsim(model, x)
+x <- list(cyl = c(4, 8))
+sim <- regsim::regsim(lm(mpg ~ . , mtcars), x)
 
 capture_text(summary(sim), "model_summary.png", width=1, height=2, units="in", res=400, pointsize=2)
 ```
 
-```{r tikz-ex, engine = "tikz", fig.width=3.8, echo=FALSE}
-% --- annotate command
-%   arguments:
-%    1. text label
-%    2. color options of the rectangle
-%    3. x,y coordinate of the rectangle
-%    4. width of the rectagle
-%    5. height of the rectagle
-%    6. anchor of the rectagle
-%    7. color options of the text label
-%    8. anchor of the text label
-%
-\newcommand{\annotate}[8]{
-	\node at (#3) [draw,#2,minimum width=#4,minimum height=#5, anchor=south west, draw opacity=1] (rect_#1) {};
-	\node[circle,draw, #7, inner sep=2pt, anchor=#8] (circle_#1) at (rect_#1.#6) {\LARGE \textbf{#1}};
-}
+**Step 2.** Next, use the tikzannotate to annotate the `.png` you just created.
 
-% --- annotated_figure environment 
-%   arguments: 
-%     1. name of a graphics file, generally a .png file 
-%
-\newenvironment{annotated_figure}[1]{
-	\begin{tikzpicture}
-		\node [anchor=south west, inner sep=0,outer sep=0] (image) at (0,0) {\includegraphics{#1}};
-		\begin{scope}[x={(image.south east)},y={(image.north west)}]}{
-		\end{scope}
-	\end{tikzpicture}
-}
+**Step 3.** You're done. There's no step 3.
 
+Code is available here: <a href="http://github.com/altaf-ali/rtikz" target="_blank">http://github.com/altaf-ali/rtikz</a>
+
+```{r tikz_figure, engine = "tikz", fig.width=3.8}
+\usetikzlibrary{annotate}
 \definecolor{darkgreen}{RGB}{0,128,0}
 		  
 \begin{annotated_figure}{model_summary.png}
-	\annotate{1}{blue, fill=blue, opacity=0.1}{0.01, 0.675}{9cm}{8.4cm}{west}{blue}{east}
-	\annotate{2}{red,  fill=red,  opacity=0.1}{0.01, 0.575}{12cm}{2.4cm}{west}{red}{east}
-	\annotate{3}{blue, fill=blue, opacity=0.1}{0.01, 0.265}{9cm}{8.4cm}{west}{blue}{east}
-	\annotate{4}{red,  fill=red,  opacity=0.1}{0.01, 0.165}{12cm}{2.4cm}{west}{red}{east}
-	\annotate{5}{darkgreen, fill=darkgreen, opacity=0.1}{0.01, 0.045}{14cm}{3cm}{west}{darkgreen}{east}
+	\annotate{1}{blue, fill=blue, opacity=0.1}{0.05, 0.680}{9cm}{8.4cm}{west}{blue}{east}
+	\annotate{2}{red,  fill=red,  opacity=0.1}{0.05, 0.585}{12cm}{2.4cm}{west}{red}{east}
+	\annotate{3}{blue, fill=blue, opacity=0.1}{0.05, 0.275}{9cm}{8.4cm}{west}{blue}{east}
+	\annotate{4}{red,  fill=red,  opacity=0.1}{0.05, 0.180}{12cm}{2.4cm}{west}{red}{east}
+	\annotate{5}{darkgreen, fill=darkgreen, opacity=0.1}{0.05, 0.050}{14cm}{3.4cm}{west}{darkgreen}{east}
 \end{annotated_figure}
 ```
